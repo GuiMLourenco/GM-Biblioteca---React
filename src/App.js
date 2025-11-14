@@ -8,10 +8,20 @@ import TestGeneros from './pages/testebd';
 import GenericListPage from './pages/GenericListPage';
 import GenericFormPage from './pages/GenericFormPage';
 import RequisicoesPainel from './pages/RequisicoesPainel';
+import { useState } from 'react';
+
+import AuthScreen from './components/AuthScreen';
 
 function App() {
+  const [authorized, setAuthorized] = useState(false);
+
+  if (!authorized) {
+    return <AuthScreen onSuccess={() => setAuthorized(true)} />;
+  }
   return (
+    
     <BrowserRouter>
+    
       <Header />   {/* aparece em todas as rotas */}
       <Routes>
         <Route path="/" element={<HomePage />} />

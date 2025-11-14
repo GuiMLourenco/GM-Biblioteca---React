@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
 import { Link } from 'react-router-dom';
 import { tableConfig } from "../config/tableConfig";
+import { useNavigate } from 'react-router-dom';
+
 
 
 export default function HomePage() {
@@ -12,6 +14,8 @@ export default function HomePage() {
         loadStats();
         loadRecent();
     }, []);
+    const navigate = useNavigate();
+
 
     async function loadStats() {
         const { count: active } = await supabase
@@ -117,7 +121,7 @@ export default function HomePage() {
                                 title="Registar Novo Livro"
                                 text="Adicione um novo livro à biblioteca"
                                 btnText="Começar"
-                                onClick={() => console.log('ir para registar livro')}
+                                onClick={() => navigate('/form/livro')}
                             />
                             <QuickAction
                                 color="success"
@@ -125,7 +129,7 @@ export default function HomePage() {
                                 title="Nova Requisição"
                                 text="Registe quando alguém requisita um livro"
                                 btnText="Começar"
-                                onClick={() => console.log('ir para registar empréstimo')}
+                                onClick={() => navigate('/form/requisicao')}
                             />
                             <QuickAction
                                 color="danger"
@@ -133,27 +137,17 @@ export default function HomePage() {
                                 title="Gerir Requisições"
                                 text="Veja, edite e acompanhe todas as requisições"
                                 btnText="Ver Requisições"
-                                onClick={() => console.log('ir para gerir requisições')}
+                                onClick={() => navigate('/req')}
                             />
-                        </div>
-
-                        <div className="row g-4 mb-4">
                             <QuickAction
                                 color="info"
                                 icon="users"
                                 title="Gerir Utentes"
                                 text="Veja e edite informações dos utentes"
                                 btnText="Ver Utentes"
-                                onClick={() => console.log('ir para gerir utentes')}
+                                onClick={() => navigate('/list/utentes')}
                             />
-                            <QuickAction
-                                color="warning"
-                                icon="database"
-                                title="Gerir Todos os Dados"
-                                text="Aceda a todas as opções de gestão"
-                                btnText="Gerir Dados"
-                                onClick={() => console.log('ir para gerir dados')}
-                            />
+
                         </div>
 
                         {/* Como usar */}
