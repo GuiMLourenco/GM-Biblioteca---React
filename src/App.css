@@ -36,3 +36,12 @@
     transform: rotate(360deg);
   }
 }
+
+:root {
+  --primary-color: #a02c2c;
+  --secondary-color: #f8f9fa;
+  --accent-color: #28a745;
+  --warning-color: #ffc107;
+  --danger-color: #dc3545;
+  --info-color: #17a2b8;
+}
