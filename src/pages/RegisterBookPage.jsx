@@ -2,11 +2,33 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { AuthorSearchModal } from '../components/SearchModals';
+import {
+    FaBook,
+    FaEdit,
+    FaArrowLeft,
+    FaSave,
+    FaUndo,
+    FaBarcode,
+    FaHeading,
+    FaUserEdit,
+    FaTags,
+    FaCalendar,
+    FaLayerGroup,
+    FaBuilding,
+    FaCopy,
+    FaHandHolding,
+    FaSearch,
+    FaTimes,
+    FaInfoCircle,
+    FaCheckCircle,
+    FaExclamationTriangle,
+    FaSpinner
+} from 'react-icons/fa';
 
 export default function RegisterBookPage() {
     const nav = useNavigate();
-    const { id } = useParams(); // Captura o ID da URL
-    const isEditMode = Boolean(id); // Determina se está em modo edição
+    const { id } = useParams();
+    const isEditMode = Boolean(id);
 
     /* ---------- campos do formulário ---------- */
     const [isbn, setIsbn] = useState('');
@@ -102,7 +124,6 @@ export default function RegisterBookPage() {
                 .select('*', { count: 'exact', head: true })
                 .eq('lex_li_cod', id);
 
-            // Em modo edição, mostra apenas contagem (não permite criar mais aqui)
             setNumEx(count || 0);
 
         } catch (err) {
@@ -222,11 +243,17 @@ export default function RegisterBookPage() {
     /* ---------- UI ---------- */
     if (loading && isEditMode) {
         return (
-            <div className="container py-4 text-center">
-                <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden">A carregar...</span>
+            <div className="container py-5">
+                <div className="row justify-content-center">
+                    <div className="col-md-8">
+                        <div className="card shadow-sm">
+                            <div className="card-body text-center py-5">
+                                <FaSpinner className="fa-spin text-primary mb-3" size={40} />
+                                <p className="text-muted mb-0">A carregar dados do livro...</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <p className="mt-3 text-muted">A carregar dados do livro...</p>
             </div>
         );
     }
@@ -237,260 +264,296 @@ export default function RegisterBookPage() {
                 {/* Cabeçalho */}
                 <div className="d-flex justify-content-between align-items-center mb-4">
                     <div>
-                        <h2 className="text-primary">
-                            <i className={`fas fa-${isEditMode ? 'edit' : 'book'} me-2`} />
+                        <h2 className="text-primary mb-1">
+                            {isEditMode ? <FaEdit className="me-2" /> : <FaBook className="me-2" />}
                             {isEditMode ? 'Editar Livro' : 'Registar Novo Livro'}
                         </h2>
-                        <p className="text-muted">
+                        <p className="text-muted mb-0">
                             {isEditMode
                                 ? 'Atualize as informações do livro'
                                 : 'Preencha as informações do livro para adicionar à biblioteca'}
                         </p>
                     </div>
-                    <button className="btn btn-secondary" onClick={() => nav(-1)}>
+                    <button className="btn btn-secondary friendly-btn" onClick={() => nav(-1)}>
+                        <FaArrowLeft className="me-2" />
                         Voltar
                     </button>
                 </div>
 
                 {/* Alerts */}
                 {success && (
-                    <div className="alert alert-success alert-dismissible fade show" role="alert">
-                        <i className="fas fa-check-circle me-2" />
+                    <div className="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                        <FaCheckCircle className="me-2" />
                         {success}
                         <button type="button" className="btn-close" onClick={() => setSuccess('')} />
                     </div>
                 )}
                 {error && (
-                    <div className="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i className="fas fa-exclamation-triangle me-2" />
+                    <div className="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                        <FaExclamationTriangle className="me-2" />
                         {error}
                         <button type="button" className="btn-close" onClick={() => setError('')} />
                     </div>
                 )}
 
                 {/* Formulário */}
-                <div className="card">
-                    <div className="card-header">
+                <div className="card shadow-sm">
+                    <div className="card-header bg-primary text-white">
                         <h5 className="mb-0">
-                            <i className="fas fa-info-circle me-2" />
+                            <FaInfoCircle className="me-2" />
                             Informações do Livro
                         </h5>
                     </div>
-                    <div className="card-body">
-                        <form onSubmit={handleSave} className="row g-3">
-                            {/* ISBN */}
-                            <div className="col-md-4">
-                                <label className="form-label">
-                                    <i className="fas fa-barcode me-1" />
-                                    ISBN *
-                                </label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    value={isbn}
-                                    onChange={(e) => setIsbn(e.target.value)}
-                                    required
-                                    placeholder="Ex: 978-1234567890"
-                                />
-                                <div className="form-text">Código único do livro (obrigatório)</div>
-                            </div>
-
-                            {/* Título */}
-                            <div className="col-md-8">
-                                <label className="form-label">
-                                    <i className="fas fa-heading me-1" />
-                                    Título *
-                                </label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    value={titulo}
-                                    onChange={(e) => setTitulo(e.target.value)}
-                                    required
-                                    placeholder="Ex: O Pequeno Príncipe"
-                                />
-                                <div className="form-text">Nome do livro (obrigatório)</div>
-                            </div>
-
-                            {/* Autores */}
-                            <div className="col-md-6">
-                                <label className="form-label">
-                                    <i className="fas fa-user-edit me-1" />
-                                    Autor(es) *
-                                </label>
-                                <div className="input-group">
-                                    <button
-                                        type="button"
-                                        className="btn btn-outline-primary"
-                                        onClick={() => setShowAutorModal(true)}
-                                    >
-                                        <i className="fas fa-search me-1" />
-                                        Pesquisar Autor
-                                    </button>
-                                </div>
-                                <div className="form-text">
-                                    Clique em pesquisar para adicionar autores à lista abaixo
-                                </div>
-                                <div className="mt-2">
-                                    {autoresSel.map((nome) => (
-                                        <span key={nome} className="badge rounded-pill text-bg-light border me-2 mb-2 d-inline-flex align-items-center">
-                                            {nome}
-                                            <button
-                                                type="button"
-                                                className="btn btn-sm btn-link text-danger p-0 ms-1"
-                                                onClick={() => setAutoresSel(autoresSel.filter((a) => a !== nome))}
-                                            >
-                                                <i className="fas fa-times" />
-                                            </button>
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Género */}
-                            <div className="col-md-6">
-                                <label className="form-label">
-                                    <i className="fas fa-tags me-1" />
-                                    Género
-                                </label>
-                                <select
-                                    className="form-select"
-                                    value={genero}
-                                    onChange={(e) => setGenero(e.target.value)}
-                                >
-                                    <option value="">-- Escolha o género --</option>
-                                    {listaGeneros.map((g) => (
-                                        <option key={g.ge_genero} value={g.ge_genero}>
-                                            {g.ge_genero}
-                                        </option>
-                                    ))}
-                                </select>
-                                <div className="form-text">Tipo de livro (opcional)</div>
-                            </div>
-
-                            {/* Ano */}
-                            <div className="col-md-4">
-                                <label className="form-label">
-                                    <i className="fas fa-calendar me-1" />
-                                    Ano de Publicação
-                                </label>
-                                <input
-                                    type="number"
-                                    className="form-control"
-                                    value={ano}
-                                    onChange={(e) => setAno(e.target.value)}
-                                    min="1000"
-                                    max="2100"
-                                    placeholder="Ex: 2023"
-                                />
-                                <div className="form-text">Ano em que foi publicado (opcional)</div>
-                            </div>
-
-                            {/* Edição */}
-                            <div className="col-md-4">
-                                <label className="form-label">
-                                    <i className="fas fa-layer-group me-1" />
-                                    Edição
-                                </label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    value={edicao}
-                                    onChange={(e) => setEdicao(e.target.value)}
-                                    placeholder="Ex: 1.ª"
-                                />
-                                <div className="form-text">Número da edição (opcional)</div>
-                            </div>
-
-                            {/* Editora */}
-                            <div className="col-md-4">
-                                <label className="form-label">
-                                    <i className="fas fa-building me-1" />
-                                    Editora
-                                </label>
-                                <select
-                                    className="form-select"
-                                    value={editora}
-                                    onChange={(e) => setEditora(e.target.value)}
-                                >
-                                    <option value="">-- Escolha a editora --</option>
-                                    {listaEditoras.map((ed) => (
-                                        <option key={ed.ed_cod} value={ed.ed_cod}>
-                                            {ed.ed_nome}
-                                        </option>
-                                    ))}
-                                </select>
-                                <div className="form-text">Casa editora (opcional)</div>
-                            </div>
-
-                            {/* Exemplares - Apenas em modo registo */}
-                            {!isEditMode && (
-                                <>
-                                    <div className="col-md-4">
-                                        <label className="form-label">
-                                            <i className="fas fa-copy me-1" />
-                                            Exemplares a criar
-                                        </label>
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            value={numEx}
-                                            onChange={(e) => setNumEx(Math.max(0, Number(e.target.value)))}
-                                            min="0"
-                                            placeholder="Ex: 3"
-                                        />
-                                        <div className="form-text">
-                                            Quantos exemplares físicos deseja criar automaticamente
-                                        </div>
+                    <div className="card-body p-4">
+                        <form onSubmit={handleSave}>
+                            <div className="row g-4">
+                                {/* ISBN */}
+                                <div className="col-md-4">
+                                    <label className="form-label fw-semibold">
+                                        <FaBarcode className="me-2 text-primary" />
+                                        ISBN
+                                        <span className="text-danger ms-1">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={isbn}
+                                        onChange={(e) => setIsbn(e.target.value)}
+                                        required
+                                        placeholder="Ex: 978-1234567890"
+                                    />
+                                    <div className="form-text">
+                                        <small><FaInfoCircle className="me-1" />Código único do livro</small>
                                     </div>
+                                </div>
 
-                                    <div className="col-md-4 d-flex align-items-end">
-                                        <div className="form-check form-switch mt-2">
-                                            <input
-                                                className="form-check-input"
-                                                type="checkbox"
-                                                checked={permReq}
-                                                onChange={(e) => setPermReq(e.target.checked)}
-                                            />
-                                            <label className="form-check-label">
-                                                <i className="fas fa-hand-holding me-1" />
-                                                Permitir requisição dos exemplares
-                                            </label>
-                                        </div>
+                                {/* Título */}
+                                <div className="col-md-8">
+                                    <label className="form-label fw-semibold">
+                                        <FaHeading className="me-2 text-primary" />
+                                        Título
+                                        <span className="text-danger ms-1">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={titulo}
+                                        onChange={(e) => setTitulo(e.target.value)}
+                                        required
+                                        placeholder="Ex: O Pequeno Príncipe"
+                                    />
+                                    <div className="form-text">
+                                        <small><FaInfoCircle className="me-1" />Nome completo do livro</small>
                                     </div>
-                                </>
-                            )}
+                                </div>
 
-                            {/* Info exemplares em modo edição */}
-                            {isEditMode && (
+                                {/* Autores */}
                                 <div className="col-12">
-                                    <div className="alert alert-info">
-                                        <i className="fas fa-info-circle me-2" />
-                                        Este livro tem <strong>{numEx} exemplar(es)</strong> registado(s).
-                                        Para gerir exemplares, aceda à página de detalhes do livro.
+                                    <label className="form-label fw-semibold">
+                                        <FaUserEdit className="me-2 text-primary" />
+                                        Autor(es)
+                                        <span className="text-danger ms-1">*</span>
+                                    </label>
+                                    <div className="input-group mb-2">
+                                        <button
+                                            type="button"
+                                            className="btn btn-outline-primary"
+                                            onClick={() => setShowAutorModal(true)}
+                                        >
+                                            <FaSearch className="me-2" />
+                                            Pesquisar Autor
+                                        </button>
+                                    </div>
+                                    
+                                    {autoresSel.length === 0 ? (
+                                        <div className="alert alert-warning mb-0">
+                                            <FaExclamationTriangle className="me-2" />
+                                            Nenhum autor selecionado. Clique em "Pesquisar Autor" para adicionar.
+                                        </div>
+                                    ) : (
+                                        <div className="p-3 bg-light rounded">
+                                            <div className="d-flex flex-wrap gap-2">
+                                                {autoresSel.map((nome) => (
+                                                    <span key={nome} className="badge bg-primary fs-6 d-inline-flex align-items-center">
+                                                        {nome}
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-sm btn-link text-white p-0 ms-2"
+                                                            onClick={() => setAutoresSel(autoresSel.filter((a) => a !== nome))}
+                                                            style={{ textDecoration: 'none' }}
+                                                        >
+                                                            <FaTimes />
+                                                        </button>
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Género */}
+                                <div className="col-md-6">
+                                    <label className="form-label fw-semibold">
+                                        <FaTags className="me-2 text-primary" />
+                                        Género
+                                    </label>
+                                    <select
+                                        className="form-select"
+                                        value={genero}
+                                        onChange={(e) => setGenero(e.target.value)}
+                                    >
+                                        <option value="">-- Escolha o género --</option>
+                                        {listaGeneros.map((g) => (
+                                            <option key={g.ge_genero} value={g.ge_genero}>
+                                                {g.ge_genero}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <div className="form-text">
+                                        <small><FaInfoCircle className="me-1" />Categoria do livro (opcional)</small>
                                     </div>
                                 </div>
-                            )}
+
+                                {/* Ano */}
+                                <div className="col-md-6">
+                                    <label className="form-label fw-semibold">
+                                        <FaCalendar className="me-2 text-primary" />
+                                        Ano de Publicação
+                                    </label>
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        value={ano}
+                                        onChange={(e) => setAno(e.target.value)}
+                                        min="1000"
+                                        max="2100"
+                                        placeholder="Ex: 2023"
+                                    />
+                                    <div className="form-text">
+                                        <small><FaInfoCircle className="me-1" />Ano de publicação (opcional)</small>
+                                    </div>
+                                </div>
+
+                                {/* Edição */}
+                                <div className="col-md-6">
+                                    <label className="form-label fw-semibold">
+                                        <FaLayerGroup className="me-2 text-primary" />
+                                        Edição
+                                    </label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={edicao}
+                                        onChange={(e) => setEdicao(e.target.value)}
+                                        placeholder="Ex: 1.ª"
+                                    />
+                                    <div className="form-text">
+                                        <small><FaInfoCircle className="me-1" />Número da edição (opcional)</small>
+                                    </div>
+                                </div>
+
+                                {/* Editora */}
+                                <div className="col-md-6">
+                                    <label className="form-label fw-semibold">
+                                        <FaBuilding className="me-2 text-primary" />
+                                        Editora
+                                    </label>
+                                    <select
+                                        className="form-select"
+                                        value={editora}
+                                        onChange={(e) => setEditora(e.target.value)}
+                                    >
+                                        <option value="">-- Escolha a editora --</option>
+                                        {listaEditoras.map((ed) => (
+                                            <option key={ed.ed_cod} value={ed.ed_cod}>
+                                                {ed.ed_nome}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <div className="form-text">
+                                        <small><FaInfoCircle className="me-1" />Casa publicadora (opcional)</small>
+                                    </div>
+                                </div>
+
+                                {/* Exemplares - Apenas em modo registo */}
+                                {!isEditMode && (
+                                    <>
+                                        <div className="col-12">
+                                            <hr className="my-2" />
+                                            <h6 className="text-primary mb-3">
+                                                <FaCopy className="me-2" />
+                                                Exemplares Físicos
+                                            </h6>
+                                        </div>
+
+                                        <div className="col-md-6">
+                                            <label className="form-label fw-semibold">
+                                                <FaCopy className="me-2 text-primary" />
+                                                Quantidade de Exemplares
+                                            </label>
+                                            <input
+                                                type="number"
+                                                className="form-control"
+                                                value={numEx}
+                                                onChange={(e) => setNumEx(Math.max(0, Number(e.target.value)))}
+                                                min="0"
+                                                placeholder="Ex: 3"
+                                            />
+                                            <div className="form-text">
+                                                <small><FaInfoCircle className="me-1" />Número de cópias físicas a criar</small>
+                                            </div>
+                                        </div>
+
+                                        <div className="col-md-6 d-flex align-items-end">
+                                            <div className="form-check form-switch">
+                                                <input
+                                                    className="form-check-input"
+                                                    type="checkbox"
+                                                    checked={permReq}
+                                                    onChange={(e) => setPermReq(e.target.checked)}
+                                                    id="permReqSwitch"
+                                                />
+                                                <label className="form-check-label" htmlFor="permReqSwitch">
+                                                    <FaHandHolding className="me-2 text-primary" />
+                                                    Permitir requisição dos exemplares
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
+
+                                {/* Info exemplares em modo edição */}
+                                {isEditMode && (
+                                    <div className="col-12">
+                                        <div className="alert alert-info shadow-sm">
+                                            <FaInfoCircle className="me-2" />
+                                            Este livro tem <strong>{numEx} exemplar(es)</strong> registado(s).
+                                            Para gerir exemplares, aceda à lista de exemplares deste livro.
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
 
                             {/* Botões */}
-                            <div className="col-12">
+                            <div className="d-flex gap-2 mt-4 pt-3 border-top">
                                 <button type="submit" className="btn btn-primary friendly-btn" disabled={loading}>
                                     {loading ? (
                                         <>
-                                            <span className="spinner-border spinner-border-sm me-2" />
+                                            <FaSpinner className="fa-spin me-2" />
                                             A guardar...
                                         </>
                                     ) : (
                                         <>
-                                            <i className="fas fa-save me-2" />
+                                            <FaSave className="me-2" />
                                             {isEditMode ? 'Atualizar Livro' : 'Guardar Livro'}
                                         </>
                                     )}
                                 </button>
+                                
                                 {!isEditMode && (
                                     <button
                                         type="button"
-                                        className="btn btn-outline-secondary friendly-btn ms-2"
+                                        className="btn btn-outline-warning friendly-btn"
                                         onClick={() => {
                                             setIsbn('');
                                             setTitulo('');
@@ -502,14 +565,23 @@ export default function RegisterBookPage() {
                                             setNumEx(0);
                                             setPermReq(true);
                                         }}
+                                        disabled={loading}
                                     >
-                                        <i className="fas fa-undo me-2" />
+                                        <FaUndo className="me-2" />
                                         Limpar Campos
                                     </button>
                                 )}
                             </div>
                         </form>
                     </div>
+                </div>
+
+                {/* Informação adicional */}
+                <div className="mt-3 text-center">
+                    <small className="text-muted">
+                        <FaInfoCircle className="me-1" />
+                        Os campos marcados com <span className="text-danger">*</span> são obrigatórios
+                    </small>
                 </div>
             </div>
 
@@ -518,9 +590,33 @@ export default function RegisterBookPage() {
                 <AuthorSearchModal
                     open={showAutorModal}
                     onClose={() => setShowAutorModal(false)}
-                    onSelect={(autor) => setAutoresSel((prev) => [...prev, autor.au_nome])}
+                    onSelect={(autor) => {
+                        if (!autoresSel.includes(autor.au_nome)) {
+                            setAutoresSel((prev) => [...prev, autor.au_nome]);
+                        }
+                    }}
                 />
             )}
+
+            <style jsx>{`
+                .friendly-btn {
+                    border-radius: 25px;
+                    padding: 0.5rem 1.5rem;
+                    font-weight: 500;
+                    transition: all 0.3s ease;
+                }
+                .friendly-btn:hover:not(:disabled) {
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                }
+                .fa-spin {
+                    animation: fa-spin 1s infinite linear;
+                }
+                @keyframes fa-spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            `}</style>
         </>
     );
 }
