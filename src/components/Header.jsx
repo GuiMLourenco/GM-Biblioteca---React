@@ -51,21 +51,15 @@ export default function Header() {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav ms-auto">
               <li className="nav-item">
-                <Link className="nav-link" to="/registar">
+                <Link className="nav-link" to="/form/livro">
                   <i className="fas fa-book me-1" />
                   Registar Livro
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/emprestimo">
+                <Link className="nav-link" to="/form/requisicao">
                   <i className="fas fa-hand-holding me-1" />
                   Registar Empréstimo
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/gerir">
-                  <i className="fas fa-database me-1" />
-                  Gerir Dados
                 </Link>
               </li>
             </ul>
