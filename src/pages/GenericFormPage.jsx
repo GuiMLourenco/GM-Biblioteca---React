@@ -231,22 +231,23 @@ export default function GenericFormPage() {
     }
 
     if (field.type === "boolean") {
-      return (
-        <div className="form-check form-switch">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            checked={val === true || val === "true"}
-            onChange={(e) =>
-              setValues({ ...values, [name]: e.target.checked })
-            }
-          />
-          <label className="form-check-label text-muted">
-            {val === true || val === "true" ? "Sim" : "Não"}
-          </label>
-        </div>
-      );
-    }
+  return (
+    <div className="form-check form-switch">
+      <input
+        className="form-check-input"
+        type="checkbox"
+        checked={Boolean(val)}
+        onChange={(e) =>
+          setValues({ ...values, [name]: e.target.checked })
+        }
+      />
+      <label className="form-check-label text-muted">
+        {Boolean(val) ? "Sim" : "Não"}
+      </label>
+    </div>
+  );
+}
+
 
     if (field.type === "number") {
       return (
