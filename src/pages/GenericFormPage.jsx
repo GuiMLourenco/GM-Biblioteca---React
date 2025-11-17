@@ -8,12 +8,12 @@ import {
   LivroSearchModal,
   UtenteSearchModal
 } from "../components/SearchModals";
-import { 
-  FaArrowLeft, 
-  FaSave, 
-  FaTimes, 
-  FaEdit, 
-  FaPlus, 
+import {
+  FaArrowLeft,
+  FaSave,
+  FaTimes,
+  FaEdit,
+  FaPlus,
   FaExclamationTriangle,
   FaSearch,
   FaInfoCircle,
@@ -69,9 +69,18 @@ export default function GenericFormPage() {
     let initial = {};
     let initialDisplay = {};
     fieldNames.forEach((name) => {
-      initial[name] = "";
+      const def = cfg.fields[name];
+
+      // Se for data → preencher com data atual (YYYY-MM-DD)
+      if (def.type === "date"&& def.showInForm !== false && !id) {
+        initial[name] = new Date().toISOString().substring(0, 10);
+      } else {
+        initial[name] = "";
+      }
+
       initialDisplay[name] = "";
     });
+
 
     // Carregar listas FK normais
     const fkMap = {};
@@ -129,11 +138,17 @@ export default function GenericFormPage() {
     if (!id) delete payload[pk];
 
     const cleanedPayload = Object.fromEntries(
-      Object.entries(payload).map(([key, val]) => [
-        key,
-        val === "" ? null : val
-      ])
+      Object.entries(payload).map(([key, val]) => {
+        const fieldDef = cfg.fields[key];
+
+        if (fieldDef?.type === "boolean") {
+          return [key, Boolean(val)];
+        }
+
+        return [key, val === "" ? null : val];
+      })
     );
+
 
     let result;
     if (id) {
@@ -231,22 +246,22 @@ export default function GenericFormPage() {
     }
 
     if (field.type === "boolean") {
-  return (
-    <div className="form-check form-switch">
-      <input
-        className="form-check-input"
-        type="checkbox"
-        checked={Boolean(val)}
-        onChange={(e) =>
-          setValues({ ...values, [name]: e.target.checked })
-        }
-      />
-      <label className="form-check-label text-muted">
-        {Boolean(val) ? "Sim" : "Não"}
-      </label>
-    </div>
-  );
-}
+      return (
+        <div className="form-check form-switch">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            checked={Boolean(val)}
+            onChange={(e) =>
+              setValues({ ...values, [name]: e.target.checked })
+            }
+          />
+          <label className="form-check-label text-muted">
+            {Boolean(val) ? "Sim" : "Não"}
+          </label>
+        </div>
+      );
+    }
 
 
     if (field.type === "number") {
@@ -354,8 +369,8 @@ export default function GenericFormPage() {
             {isEditMode ? "Editar" : "Novo"} {cfg.label || tableName}
           </h2>
           <p className="text-muted mb-0">
-            {isEditMode 
-              ? "Atualize as informações do registo" 
+            {isEditMode
+              ? "Atualize as informações do registo"
               : "Preencha os campos para criar um novo registo"}
           </p>
         </div>
@@ -388,7 +403,7 @@ export default function GenericFormPage() {
               {visibleFields.map((name) => {
                 const field = cfg.fields[name];
                 const colSize = field.type === "textarea" ? "col-12" : "col-md-6";
-                
+
                 return (
                   <div className={colSize} key={name}>
                     <label className="form-label fw-semibold">

@@ -87,7 +87,7 @@ export default function GenericListPage() {
   async function handleDelete(id) {
     if (window.confirm("Tem a certeza que deseja apagar este registo? Esta ação não pode ser revertida.")) {
       setDeleteLoading(id);
-      
+
       const { error } = await supabase
         .from(tableName)
         .delete()
@@ -98,7 +98,7 @@ export default function GenericListPage() {
       } else {
         await loadData();
       }
-      
+
       setDeleteLoading(null);
     }
   }
@@ -113,7 +113,7 @@ export default function GenericListPage() {
             {cfg.label}
           </h2>
           <p className="text-muted mb-0">
-            {filteredRows.length} {filteredRows.length === 1 ? 'registo' : 'registos'} 
+            {filteredRows.length} {filteredRows.length === 1 ? 'registo' : 'registos'}
             {searchTerm && ` encontrado(s)`}
           </p>
         </div>
@@ -144,8 +144,8 @@ export default function GenericListPage() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             {searchTerm && (
-              <button 
-                className="btn btn-outline-secondary" 
+              <button
+                className="btn btn-outline-secondary"
                 onClick={() => setSearchTerm("")}
               >
                 Limpar
@@ -189,7 +189,7 @@ export default function GenericListPage() {
                         <div className="text-muted">
                           <FaExclamationTriangle className="mb-2" size={32} />
                           <p className="mb-0">
-                            {searchTerm 
+                            {searchTerm
                               ? `Nenhum registo encontrado para "${searchTerm}"`
                               : "Sem registos para apresentar"}
                           </p>
@@ -201,7 +201,17 @@ export default function GenericListPage() {
                       <tr key={row[pk]} className={idx % 2 === 0 ? "bg-white" : "bg-light bg-opacity-25"}>
                         {fields.map(f => (
                           <td key={f} className="px-4 py-3">
-                            {String(row[f] ?? "")}
+                            {(() => {
+                              const value = row[f];
+
+                              // Detectar campo booleano
+                              if (cfg.fields[f].type === "boolean") {
+                                return value ? "✔️" : "❌";
+                              }
+
+                              return String(value ?? "");
+                            })()}
+
                           </td>
                         ))}
                         <td className="px-4 py-3 text-center">
@@ -234,7 +244,7 @@ export default function GenericListPage() {
               </table>
             </div>
           </div>
-          
+
           {/* Rodapé da tabela */}
           {filteredRows.length > 0 && (
             <div className="card-footer bg-light">

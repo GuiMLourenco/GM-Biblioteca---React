@@ -26,7 +26,7 @@ export default function RequisicoesPainel() {
         livro_exemplar!inner(lex_cod, livro!inner(li_titulo)),
         utente(ut_nome)
       `)
-      .eq("re_emprestado", !true)
+      .eq("re_emprestado", false)
       .is("re_data_devolucao", null);
 
     if (query) {
