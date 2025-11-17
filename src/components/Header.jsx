@@ -1,9 +1,13 @@
 import { Link } from 'react-router-dom';
 
 export default function Header() {
+  function handleLogout() {
+    localStorage.removeItem("authorized");
+    window.location.reload(); // força voltar ao AuthScreen
+  }
+
   return (
     <>
-      {/* CSS inline apenas para as cores / gradientes */}
       <style>{`
         :root {
           --primary-color: #a02c2c;
@@ -24,17 +28,27 @@ export default function Header() {
           font-weight: bold;
           font-size: 1.5rem;
         }
+        .logout-btn {
+          border: none;
+          background: rgba(255,255,255,0.2);
+          color: white;
+          padding: 0.45rem 0.75rem;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: background .2s;
+        }
+        .logout-btn:hover {
+          background: rgba(255,255,255,0.35);
+        }
       `}</style>
 
       <nav className="navbar navbar-expand-lg navbar-dark gm-navbar">
         <div className="container">
-          {/* Título (link para homepage) */}
           <Link className="navbar-brand" to="/">
             <i className="fas fa-book-open me-2" />
             GM Biblioteca
           </Link>
 
-          {/* Botão mobile hamburger */}
           <button
             className="navbar-toggler"
             type="button"
@@ -47,20 +61,28 @@ export default function Header() {
             <span className="navbar-toggler-icon" />
           </button>
 
-          {/* Links */}
           <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav ms-auto">
-              <li className="nav-item">
+            <ul className="navbar-nav ms-auto align-items-center">
+              <li className="nav-item me-2">
                 <Link className="nav-link" to="/form/livro">
                   <i className="fas fa-book me-1" />
                   Registar Livro
                 </Link>
               </li>
-              <li className="nav-item">
+
+              <li className="nav-item me-3">
                 <Link className="nav-link" to="/form/requisicao">
                   <i className="fas fa-hand-holding me-1" />
                   Registar Empréstimo
                 </Link>
+              </li>
+
+              {/* 🔴 Logout Button */}
+              <li className="nav-item">
+                <button className="logout-btn" onClick={handleLogout}>
+                  <i className="fas fa-sign-out-alt me-1" />
+                  Sair
+                </button>
               </li>
             </ul>
           </div>

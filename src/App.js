@@ -13,25 +13,30 @@ import { useState } from 'react';
 import AuthScreen from './components/AuthScreen';
 
 function App() {
-  const [authorized, setAuthorized] = useState(false);
+  const [authorized, setAuthorized] = useState(
+    localStorage.getItem("authorized") === "true"
+  );
 
   if (!authorized) {
-    return <AuthScreen onSuccess={() => setAuthorized(true)} />;
+    return (
+      <AuthScreen
+        onSuccess={() => {
+          localStorage.setItem("authorized", "true");
+          setAuthorized(true);
+        }}
+      />
+    );
   }
   return (
-    
     <BrowserRouter>
-    
       <Header />   {/* aparece em todas as rotas */}
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/list/:tableName" element={<GenericListPage />} />
         <Route path="/form/:tableName" element={<GenericFormPage />} />
         <Route path="/form/:tableName/:id" element={<GenericFormPage />} />
-        
-    <Route path="/form/livro/:id" element={<RegisterBookPage />} />
-    
-    <Route path="/form/livro" element={<RegisterBookPage />} />
+        <Route path="/form/livro/:id" element={<RegisterBookPage />} />
+        <Route path="/form/livro" element={<RegisterBookPage />} />
         <Route path="/teste" element={<TestGeneros />} />
         <Route path="/req" element={<RequisicoesPainel />} />
         {/* mais rotas aqui quando quiseres */}
@@ -40,5 +45,4 @@ function App() {
     </BrowserRouter>
   );
 }
-
 export default App;
