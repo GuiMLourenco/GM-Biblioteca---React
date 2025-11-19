@@ -4,14 +4,10 @@ export default function Header() {
   const navigate = useNavigate();
 
   function handleLogout() {
-    // 1️⃣ Primeiro redireciona
-    navigate("/");
+  localStorage.removeItem("authorized");
+  window.location.href = "/"; // refresh + redirect
+}
 
-    // 2️⃣ Depois remove o auth
-    setTimeout(() => {
-      localStorage.removeItem("authorized");
-    }, 50);
-  }
 
   return (
     <>
