@@ -6,6 +6,7 @@ export default function Header() {
   function handleLogout() {
   localStorage.removeItem("authorized");
   window.location.href = "/"; // refresh + redirect
+  window.location.reload();
 }
 
 
