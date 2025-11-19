@@ -128,10 +128,6 @@ export const tableConfig = {
         foreignKey: "li_cod",
         display: "li_titulo"
       },
-      lex_estado: {
-        label: "Estado",
-        type: "text"
-      },
       lex_disponivel: { label: "Disponível", type: "boolean" },
       lex_requisitavel: { label: "Requisitável", type: "boolean" }
     }
