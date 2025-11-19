@@ -1,9 +1,16 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Header() {
+  const navigate = useNavigate();
+
   function handleLogout() {
-    localStorage.removeItem("authorized");
-    window.location.reload(); // força voltar ao AuthScreen
+    // 1️⃣ Primeiro redireciona
+    navigate("/");
+
+    // 2️⃣ Depois remove o auth
+    setTimeout(() => {
+      localStorage.removeItem("authorized");
+    }, 50);
   }
 
   return (
